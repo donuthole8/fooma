@@ -26,7 +26,7 @@ def db_close(con):
 
 def auth_input(name, pw):
     """
-    ユーザ名が存在するか確認
+    ユーザ名とパスワードが合っているか確認
     param: name: ユーザ名
     param: pw: パスワード
     """
@@ -36,17 +36,18 @@ def auth_input(name, pw):
     cur.execute("""
     SELECT * FROM `users`
         WHERE `name` = ?
+        AND `pass` = ?
         LIMIT 1
-    """, (name,))
+    """, (name, pw,))
     res = cur.fetchall()
     # 接続クローズ
     db_close(con)
 
-    # データ取得できたならユーザID，パスワード返却
+    # データ取得できたならユーザID返却
     if (res==[]):
-        return -1,-1
+        return -1
     else:
-        return (res[0][0],res[0][2])
+        return (res[0][0])
 
 
 def get_user_id(name):
@@ -129,7 +130,7 @@ def get_food_num(food_name):
     return res[0][0]
 
 
-def get_food(user_id, include_deleted = False):
+def get_food(include_deleted = False):
     # 食材データ取得
 
     # データベース接続
@@ -142,13 +143,36 @@ def get_food(user_id, include_deleted = False):
     cur.execute("""
     SELECT * FROM `food`
         WHERE `deleted` = ?
-        and `user_id` = ?
-    """, (deleted_flag, user_id,))
+    """, (deleted_flag,))
     res = cur.fetchall()
     # 接続クローズ
     db_close(con)
 
-    # 食材の個数返却
+    # 食材のデータ返却
+    return res
+
+
+def get_food_price():
+    # 食材データと金額データ取得
+
+    # データベース接続
+    con, cur = db_connect()
+    cur.execute("""
+    SELECT * FROM `food`
+        LEFT JOIN `purchases`
+            ON food.id = purchases.food_id
+                LEFT JOIN `users`
+                    ON purchases.user_id = users.id
+    """)
+    res = cur.fetchall()
+    # 接続クローズ
+    db_close(con)
+
+    print("res")
+    print(res)
+    print("end")
+
+    # 食材のデータと金額返却
     return res
 
 
@@ -169,11 +193,15 @@ def add_food(food_name, amount, user_id):
     """, (food_name,))
     _food_name = cur.fetchall()
 
+    db_close(con)
+    con, cur = db_connect()
+
     if (_food_name == []):
         # 食材名が重複していない場合食材を追加
         st = """
         INSERT INTO `food` (
-            `name`,`number`,
+            `name`,
+            `number`,
             `user_id`,
             `created_at`,
             `deleted_at`,
@@ -218,38 +246,84 @@ def delete(food_id):
     db_close(con)
 
 
-def check_duplication(mail):
+def price_validation(price):
     """
-    メールアドレスの重複確認
-    param mail: メールアドレス
+    入力金額のバリデーション
+    param price: 金額
     """
+
+    # 入力されていない場合0円とする
+    if (price==""):
+        price = 0
+
+    # 有効な値であるかチェック
+    if not (str(price).isnumeric()):
+        return -1,False
+
+    # 有効であれば金額を返却
+    return int(price), True
+
+
+def add_price(price, food_name, food_num, user_id):
+    """
+    入力金額をデータベースへ追加
+    param price: 金額
+    param food_name: 食材名
+    param food_num: 食材個数
+    param user_id: ユーザID
+    """
+
+    # ユーザIDと食材の組み合わせが既存であるか調べる
     con, cur = db_connect()
     st = """
-    SELECT * FROM `users`
-        WHERE `name` = ?
+    SELECT * FROM `purchases`
+        WHERE `user_id` = ?
+            AND `food_id` = ?
     """
-    cur.execute(st, (mail,))
+    cur.execute(st, (user_id, get_food_id(food_name),))
     res = cur.fetchall()
+
+    db_close(con)
+    con, cur = db_connect()
+
+    if (res==[]):
+        # 入力金額×個数をデータベースへ追加
+        st = """
+        INSERT INTO `purchases` (
+            `user_id`,
+            `food_id`,
+            `price`) VALUES (
+                ?,?,?)
+        """
+        cur.execute(st, (user_id,get_food_id(food_name),int(price)*int(food_num),))
+    else:
+        # 入力金額×個数をデータベースに加算
+        st = """
+            UPDATE `purchases`
+                SET `price` = `price` + ?
+                    WHERE `user_id` = ?
+                        AND `food_id` = ?
+        """
+        cur.execute(st, (int(price)*int(food_num),user_id,get_food_id(food_name),))
+
     # 接続クローズ
     db_close(con)
 
-    # メールアドレスが重複していたらFalseを返却
-    return (res!=[])
 
+def reset_price(user_id,food_id):
+    """
+    金額を0円にリセットする
+    param user_id: ユーザID
+    param food_id: 食材ID
+    """
 
-def add_regdata(mail, enc_pw):
-    """
-    データベースへのユーザ情報追加
-    param mail: メールアドレス
-    param enc_pw: 暗号化済みパスワード
-    """
+    # 金額を0円に更新する
     con, cur = db_connect()
     st = """
-    INSERT INTO `users` (
-        `name`, `pass`) values (
-            ?, ?)
+        UPDATE `purchases`
+            SET `price` = 0
+                WHERE `user_id` = ?
+                    AND `food_id` = ?
     """
-    cur.execute(st, (mail, enc_pw,))
-    res = cur.fetchall()
-    # 接続クローズ
+    cur.execute(st, (user_id,food_id,))
     db_close(con)

@@ -35,14 +35,14 @@ st = """
         `user_id` INT UNSIGNED NOT NULL,
         `food_id` INT UNSIGNED NOT NULL,
         `price` INT UNSIGNED DEFAULT NULL,
-　　　　　PRIMARY KEY (`user_id`, `food_id`),
+        PRIMARY KEY (`user_id`, `food_id`),
         CONSTRAINT `fk_purchases_user_id` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`),
         CONSTRAINT `fk_purchases_food_id` FOREIGN KEY (`food_id`) REFERENCES `food`(`id`))
     """
 cur.execute(st)
 
 # テーブル確認
-cur.execute('SELECT * FROM `users`, `food`, `purchases`')
+cur.execute('SELECT * FROM `users`, food, `purchases`')
 print(cur.fetchall())
 
 # 接続のコミット・クローズ
