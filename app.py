@@ -22,6 +22,7 @@ def add_staticfile():
 
 def ret_fooma():
     # fooma.htmlのテンプレートを返却
+    print(data.get_food(session['user']))
     return render_template('fooma.html',
         user=data.get_user_name(session['user']),
         data=data.get_food(session['user'])
