@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="icon" href="../static/images/fooma.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="../static/images/fooma.ico">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://unpkg.com/purecss@2.0.6/build/pure-min.css" integrity="sha384-
+  Uu6IeWbM+gzNVXJcM9XV3SohHtmWE+3VGi496jvgX1jyvDTXfdK+rfZc8C1Aehk5" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="{{ staticfile('../static/css/style.css') }}">
+
+    <title>Fooma</title>
+</head>
+
+<body class="text-center">
+    <div class="content">
+
+        <div class="title-wrapper">
+            <h1 class="title">FOOMA</h1>
+        </div>
+
+        <div class="icon-wrapper">
+            <img src="../static/images/fooma_bin.png" width="100" height="100" alt="" class="img-thumbnail rounded-circle icon">
+        </div>
+
+        <form method="post" action="/auth" class="pure-form pure-form-stacked login-form">
+
+            <div class="container">
+                <h5 class="form-title">ユーザ名</h5>
+                <input type="text" name="user" class="form-control user-input" placeholder="ユーザ名">
+
+                <h5 class="form-title">パスワード</h5>
+                <input type="password" name="pw" class="form-control pass-input" placeholder="パスワード">
+            </div>
+
+            <button type="submit" class="btn login btn--cubic">ログイン</button>
+
+        </form>
+
+        <div class="signup-wrapper">
+            <button type="" class="btn signup btn--cubic">新規登録</button>
+        </div>
+    </div>
+</body>
+
+</html>
