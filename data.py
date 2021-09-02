@@ -26,7 +26,7 @@ def db_close(con):
 
 def auth_input(name, pw):
     """
-    ユーザ名とパスワードが合っているか確認
+    ユーザ名が存在するか確認
     param: name: ユーザ名
     param: pw: パスワード
     """
@@ -36,18 +36,17 @@ def auth_input(name, pw):
     cur.execute("""
     SELECT * FROM `users`
         WHERE `name` = ?
-        AND `pass` = ?
         LIMIT 1
-    """, (name, pw,))
+    """, (name,))
     res = cur.fetchall()
     # 接続クローズ
     db_close(con)
 
-    # データ取得できたならユーザID返却
+    # データ取得できたならユーザID，パスワード返却
     if (res==[]):
-        return -1
+        return -1,-1
     else:
-        return (res[0][0])
+        return (res[0][0],res[0][2])
 
 
 def get_user_id(name):
@@ -130,7 +129,7 @@ def get_food_num(food_name):
     return res[0][0]
 
 
-def get_food(include_deleted = False):
+def get_food(user_id, include_deleted = False):
     # 食材データ取得
 
     # データベース接続
@@ -143,7 +142,8 @@ def get_food(include_deleted = False):
     cur.execute("""
     SELECT * FROM `food`
         WHERE `deleted` = ?
-    """, (deleted_flag,))
+        and `user_id` = ?
+    """, (deleted_flag, user_id,))
     res = cur.fetchall()
     # 接続クローズ
     db_close(con)
@@ -214,5 +214,42 @@ def delete(food_id):
             `deleted_at` = ?, `deleted` = ? WHERE `id` = ?
     """
     cur.execute(st, (datetime.datetime.now(), 1, food_id,))
+    # 接続クローズ
+    db_close(con)
+
+
+def check_duplication(mail):
+    """
+    メールアドレスの重複確認
+    param mail: メールアドレス
+    """
+    con, cur = db_connect()
+    st = """
+    SELECT * FROM `users`
+        WHERE `name` = ?
+    """
+    cur.execute(st, (mail,))
+    res = cur.fetchall()
+    # 接続クローズ
+    db_close(con)
+
+    # メールアドレスが重複していたらFalseを返却
+    return (res!=[])
+
+
+def add_regdata(mail, enc_pw):
+    """
+    データベースへのユーザ情報追加
+    param mail: メールアドレス
+    param enc_pw: 暗号化済みパスワード
+    """
+    con, cur = db_connect()
+    st = """
+    INSERT INTO `users` (
+        `name`, `pass`) values (
+            ?, ?)
+    """
+    cur.execute(st, (mail, enc_pw,))
+    res = cur.fetchall()
     # 接続クローズ
     db_close(con)

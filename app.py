@@ -1,6 +1,7 @@
 from flask import Flask, request, redirect, render_template, session
 import data
 import authlog
+import reguser
 import os
 
 
@@ -10,6 +11,7 @@ app = Flask(__name__)
 app.secret_key = 'Lomd0nUthOlE'
 
 @app.context_processor
+# CSSがキャッシュにより反映されない問題を解消
 def add_staticfile():
     def staticfile_cp(fname):
         path = os.path.join(app.root_path, 'static', fname)
@@ -18,14 +20,12 @@ def add_staticfile():
     return dict(staticfile=staticfile_cp)
 
 
-# fooma.htmlのテンプレートを返却
 def ret_fooma():
     # fooma.htmlのテンプレートを返却
     return render_template('fooma.html',
         user=data.get_user_name(session['user']),
-        data=data.get_food()
+        data=data.get_food(session['user'])
     )
-
 
 
 @app.route('/')
@@ -106,6 +106,44 @@ def logout():
     authlog.logout()
 
     return redirect('/')
+
+
+@app.route('/register')
+def register():
+    # 新規ユーザ登録
+    print('register')
+
+    return render_template('register.html')
+
+
+@app.route('/user/store', methods=['POST'])
+def check_register():
+    # ユーザ登録情報確認
+    print('check_register')
+
+    # フォームの値を習得
+    mail,pw,pw_check = None,None,None
+    if 'mail' in request.form:
+        mail = request.form['mail']
+    if 'pw' in request.form:
+        pw = request.form['pw']
+    if 'pw-check' in request.form:
+        pw_check = request.form['pw-check']
+    print('mail,pw,pw-check inputed')
+
+    # バリデーション
+    msg,isCorrect = reguser.validation(mail, pw, pw_check)
+
+    print(msg,isCorrect)
+
+    if not isCorrect:
+        return render_template('register.html', msg=msg)
+
+    # セッションに新規ユーザID保存
+    authlog.save_session(data.get_user_id(mail))
+
+    # ユーザ登録の認証機能が完成したらメイン画面へ移行
+    return ret_fooma()
 
 
 if __name__ == '__main__':

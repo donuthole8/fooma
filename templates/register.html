@@ -24,26 +24,28 @@
             <h1 class="title">FOOMA</h1>
         </div>
 
-        <div class="icon-wrapper">
-            <img src="../static/images/fooma_bin.png" width="100" height="100" alt="" class="img-thumbnail rounded-circle icon">
-        </div>
+        {% for i in msg: %}
+            <p class="errmsg">{{ i }}</p>
+        {% endfor %}
 
-        <form method="post" action="/auth" class="pure-form pure-form-stacked login-form">
+        <form method="post" action="/user/store" class="pure-form pure-form-stacked login-form">
 
             <div class="container">
                 <h5 class="form-title">メールアドレス</h5>
-                <input type="text" name="user" class="form-control user-input" placeholder="メールアドレス">
+                <input type="text" name="mail" class="form-control user-input" placeholder="メールアドレス">
 
                 <h5 class="form-title">パスワード</h5>
                 <input type="password" name="pw" class="form-control pass-input" placeholder="パスワード">
+
+                <h5 class="form-title">パスワードの確認</h5>
+                <input type="password" name="pw-check" class="form-control pass-check" placeholder="パスワードの確認">
+
+                <button type="submit" class="btn check btn--cubic">登録</button>
             </div>
-
-            <button type="submit" class="btn login btn--cubic">ログイン</button>
-
         </form>
 
-        <div class="signup-wrapper">
-            <a href="/register" class="btn signup btn--cubic">新規登録</a>
+        <div class="back-wrapper">
+            <a href="/" class="btn reg-back">戻る</a>
         </div>
     </div>
 </body>

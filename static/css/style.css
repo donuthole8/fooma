@@ -6,17 +6,31 @@
     --secondary-light-color: #ffc9ba;
     /* 文字色 */
     --text-white: #ffffff;
+    --text-black: rgba(0, 0, 0, 0.712);
 }
 
 
-.list-wrapper {
-    padding: 2rem 1rem;
-    color: #ffffff;
-    padding: 2rem 1rem;
+/* 全体画面共通 */
+.content {
+    margin: 0 auto;
+    max-width: 768px;
+}
+
+.title-wrapper {
+    padding: 0.5rem;
+}
+
+.title {
+    background-color: var(--primary-color);
+    color: var(--text-white);
+    padding: 1rem;
     border-radius: 10px;
-    margin: 0px;
+    margin: 0;
+    text-align: center;
 }
 
+
+/* ログイン画面 */
 .icon-wrapper {
     margin: 1em;
 }
@@ -36,13 +50,83 @@
     padding: 0;
 }
 
-.list-title,
-.add-form-title {
+.form-title {
     background: linear-gradient(transparent 50%, var(--secondary-light-color) 50%);
     width: 50%;
     margin: 0 auto;
     max-width: 500px;
-    color: rgba(0, 0, 0, 0.712);
+    color: var(--text-black);
+}
+
+input.form-control.user-input,
+input.form-control.pass-input,
+input.form-control.pass-check {
+    margin-bottom: 2em;
+}
+
+.login,
+.signup,
+.check,
+.back,
+.reg-back,
+.logout {
+    color: var(--text-white);
+    padding: 1em 2.5em;
+    border-radius: 10px;
+    font-weight: bold;
+    width: 100%;
+}
+
+.login,
+.check,
+.back {
+    background-color: var(--secondary-color);
+}
+
+.signup-wrapper {
+    padding: 8px;
+}
+
+.signup,
+.reg-back,
+.logout {
+    background-color: var(--primary-color);
+}
+
+
+/* エラー画面 */
+.statement-wrapper {
+    padding: 3em 5em;
+}
+
+.statement-wrapper p:first-child {
+    margin-bottom: 1em;
+}
+
+.back-wrapper {
+    padding: 8px;
+}
+
+
+/* 新規ユーザ登録画面 */
+.errmsg {
+    color: var(--text-black);
+    margin: 2em 0;
+}
+
+
+/* メイン画面 */
+.list-wrapper {
+    margin-bottom: 1em;
+}
+
+.list-title,
+.add-form-title {
+    background: linear-gradient(transparent 50%, var(--secondary-light-color) 50%);
+    width: 50%;
+    margin: 1em auto 0 auto;
+    max-width: 500px;
+    color: var(--text-black);
     text-align: center;
 }
 
@@ -66,12 +150,12 @@
 
 .bought {
     color: var(--text-white);
-    background-color: var(--primary-color);
+    background-color: var(--secondary-color);
     border-radius: 10px;
 }
 
 .add-form-wrapper {
-    padding: 2rem 1rem;
+    padding: 0 0.5em;
 }
 
 .add-container {
@@ -80,18 +164,14 @@
     flex-direction: row;
 }
 
-.add-form-wrapper {
-    padding: 0em 0.5em;
-}
-
 .add-amount-wrapper {
-    margin: 0em 0.5em;
+    margin: 0 0.5em;
 }
 
 .add {
     margin-left: auto;
     color: var(--text-white);
-    background-color: var(--primary-color);
+    background-color: var(--secondary-color);
     border-radius: 10px;
     display: inline;
 }
@@ -99,85 +179,4 @@
 .logout-form {
     color: var(--text-white);
     padding: 8px;
-}
-
-.logout {
-    margin-left: auto;
-    color: var(--text-white);
-    background-color: var(--secondary-color);
-    border-radius: 10px;
-    width: 100%;
-}
-
-.form-title {
-    background: linear-gradient(transparent 50%, var(--secondary-light-color) 50%);
-    width: 35%;
-    margin: 0 auto;
-    max-width: 500px;
-    color: rgba(0, 0, 0, 0.712);
-}
-
-.signup-wrapper {
-    padding: 8px;
-}
-
-input.form-control.user-input,
-input.form-control.pass-input {
-    margin-bottom: 1em;
-}
-
-.login,
-.signup {
-    color: #ffffff;
-    padding: 1em 2.5em;
-    border-radius: 10px;
-    font-weight: bold;
-    width: 100%;
-}
-
-.login {
-    background-color: var(--primary-color);
-}
-
-.signup {
-    background-color: var(--secondary-color);
-}
-
-
-.content {
-    margin: 0 auto;
-    max-width: 768px;
-}
-
-.title-wrapper {
-    padding: 0.5rem;
-}
-
-.title {
-    background-color: var(--primary-color);
-    color: var(--text-white);
-    padding: 2rem 1rem;
-    border-radius: 10px;
-    margin: 0px;
-}
-
-.statement-wrapper {
-    padding: 3em 5em;
-}
-
-.statement-wrapper p:first-child {
-    margin-bottom: 1em;
-}
-
-.back-wrapper {
-    padding: 8px;
-}
-
-.back {
-    color: var(--text-white);
-    padding: 1em 2.5em;
-    border-radius: 10px;
-    font-weight:bold;
-    width: 100%;
-    background-color: var(--primary-color);
 }
