@@ -10,6 +10,7 @@ app = Flask(__name__)
 # セッションキーの設定
 app.secret_key = 'Lomd0nUthOlE'
 
+
 @app.context_processor
 # CSSがキャッシュにより反映されない問題を解消
 def add_staticfile():
@@ -28,12 +29,13 @@ def ret_fooma():
     bought_user = []
     for i in food_data:
         bought_user.append(i[11])
+    print('bought_user',bought_user)
 
     return render_template('fooma.html',
-        leng=leng,
-        user=data.get_user_name(session['user']),
-        data=food_data,
-        bought_user=bought_user
+        user = data.get_user_name(session['user']),
+        leng = leng,
+        data = food_data,
+        bought_user = bought_user
     )
 
 
@@ -80,13 +82,18 @@ def add():
 
     # フォームの値を習得
     if not request.form['food']:
+        # エラーメッセージを返却しても良い
         return ret_fooma()
     else:
         food = request.form['food']
     num = request.form['num']
+    price = 0
+    if request.form['price']:
+        price = request.form['price']
 
     # 食材をデータベースに追加
     data.add_food(food, num, user)
+    data.add_price(price, food, num, user)
     print('food added')
 
     return ret_fooma()
