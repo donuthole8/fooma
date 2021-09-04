@@ -17,8 +17,8 @@ def auth_param(user, pw):
     # ユーザとパスワードが合っているか認証する
     print('auth_param')
 
-    # ユーザ名とパスワードが合っているか確認する
-    user_id,enc_pw = data.auth_input(user,pw)
+    # ユーザ名が存在するか確認する
+    user_id,enc_pw = data.auth_input(user)
     if (user_id==-1):
         return False
 

@@ -24,11 +24,10 @@ def db_close(con):
     con.close()
 
 
-def auth_input(name, pw):
+def auth_input(name):
     """
     ユーザ名とパスワードが合っているか確認
     param: name: ユーザ名
-    param: pw: パスワード
     """
     # データベース接続
     con, cur = db_connect()
@@ -36,18 +35,19 @@ def auth_input(name, pw):
     cur.execute("""
     SELECT * FROM `users`
         WHERE `name` = ?
-        AND `pass` = ?
         LIMIT 1
-    """, (name, pw,))
+    """, (name,))
     res = cur.fetchall()
     # 接続クローズ
     db_close(con)
 
-    # データ取得できたならユーザID返却
+    print(res)
+
+    # データ取得できたならユーザID返却と暗号化パスワード返却
     if (res==[]):
-        return -1
+        return -1,-1
     else:
-        return (res[0][0])
+        return (res[0][0],res[0][2])
 
 
 def get_user_id(name):
@@ -326,4 +326,41 @@ def reset_price(user_id,food_id):
                     AND `food_id` = ?
     """
     cur.execute(st, (user_id,food_id,))
+    db_close(con)
+
+
+def check_duplication(mail):
+    """
+    メールアドレスの重複確認
+    param mail: メールアドレス
+    """
+    con, cur = db_connect()
+    st = """
+    SELECT * FROM `users`
+        WHERE `name` = ?
+    """
+    cur.execute(st, (mail,))
+    res = cur.fetchall()
+    # 接続クローズ
+    db_close(con)
+
+    # メールアドレスが重複していたらFalseを返却
+    return (res!=[])
+
+
+def add_regdata(mail, enc_pw):
+    """
+    データベースへのユーザ情報追加
+    param mail: メールアドレス
+    param enc_pw: 暗号化済みパスワード
+    """
+    con, cur = db_connect()
+    st = """
+    INSERT INTO `users` (
+        `name`, `pass`) values (
+            ?, ?)
+    """
+    cur.execute(st, (mail, enc_pw,))
+    res = cur.fetchall()
+    # 接続クローズ
     db_close(con)

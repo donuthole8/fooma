@@ -22,10 +22,18 @@ def add_staticfile():
 
 def ret_fooma():
     # fooma.htmlのテンプレートを返却
-    print(data.get_food(session['user']))
+    # food_data = data.get_food(session['user'])
+    food_data = data.get_food_price()
+    leng = len(food_data)
+    bought_user = []
+    for i in food_data:
+        bought_user.append(i[11])
+
     return render_template('fooma.html',
+        leng=leng,
         user=data.get_user_name(session['user']),
-        data=data.get_food(session['user'])
+        data=food_data,
+        bought_user=bought_user
     )
 
 
@@ -50,6 +58,7 @@ def auth():
     if (user is None) or (pw is None):
         return redirect('/')
     print('user,pw inputed')
+    print(user,pw)
 
     # ユーザ情報が認証されたときfooma.html（メイン画面）を返す
     if authlog.auth_param(user, pw) == True:
