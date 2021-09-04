@@ -112,6 +112,8 @@ def bought():
 
     # 購入済み食材をdeletedフラグ立てる
     data.delete(food_id)
+    # 金額を0円にリセット
+    data.reset_price(session['user'],food_id)
 
     return ret_fooma()
 
