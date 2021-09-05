@@ -1,0 +1,1 @@
+web: gunicorn <foodmanage>:app --log-file=-
