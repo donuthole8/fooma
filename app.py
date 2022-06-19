@@ -1,5 +1,6 @@
 from flask import Flask, request, redirect, render_template, session
 import data
+import database
 import authlog
 import reguser
 import os
@@ -41,6 +42,8 @@ def ret_fooma():
 
 @app.route('/')
 def login():
+    # テーブルが存在しない場合は作成
+    database.create_db()
     # ログイン画面
     print('start /')
     return render_template('login.html')
@@ -167,4 +170,5 @@ def check_register():
 
 if __name__ == '__main__':
     # アプリ起動
-    app.run(host="0.0.0.0")
+    # app.run(host="0.0.0.0")
+    app.run()
